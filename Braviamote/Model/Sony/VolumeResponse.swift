@@ -13,16 +13,7 @@ struct VolumeResponse: Decodable {
     let result: [[VolumeInfoResponse]]
 
     var speaker: VolumeInfoResponse? {
-        if result.count == 0 || result[0].count == 0 {
-            return nil
-        }
-        let volInfo = result[0].filter { (vol) -> Bool in
-            vol.target == "speaker"
-        }
-        if volInfo.count == 0 {
-            return nil
-        }
-        return volInfo[0]
+        result.first?.first { $0.target == "speaker" }
     }
 }
 

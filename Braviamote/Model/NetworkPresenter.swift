@@ -8,35 +8,19 @@
 
 import SwiftUI
 
-protocol NetworkPresenterDelegate {
-    func mainPresenterIPSearchFinished()
-    func mainPresenterIPSearchCancelled()
-    func mainPresenterIPSearchFailed()
-}
-
 class NetworkPresenter: NSObject, MMLANScannerDelegate, ObservableObject {
-    //@Published dynamic var connectedDevices : [MMDevice]!
-    @Published var connectedDevices: [Device]!
+    @Published var connectedDevices: [Device] = []
     
     @Published var progressValue: Float = 0.0
 
-    @Published var isScanRunning : Bool = false
+    @Published var isScanRunning: Bool = false
     
-    var lanScanner : MMLANScanner!
-    var delegate : NetworkPresenterDelegate?
+    var lanScanner: MMLANScanner!
     
-    //var models: [TVModel] = [Sony()]
     var sony = Sony()
     
-    //MARK: - Custom init method
-    //Initialization with delegate
-    override init() {      
+    override init() {
         super.init()
-                
-        self.connectedDevices = [Device]()
-        
-        self.isScanRunning = false
-        
         self.lanScanner = MMLANScanner(delegate: self)
     }
     
@@ -50,19 +34,16 @@ class NetworkPresenter: NSObject, MMLANScannerDelegate, ObservableObject {
         }
     }
 
-    func startNetWorkScan() ->Void{
-     
-        if (self.isScanRunning) {
+    func startNetWorkScan() {
+        if self.isScanRunning {
             self.stopNetWorkScan()
-            self.connectedDevices.removeAll()
-        } else {
-            self.connectedDevices.removeAll()
-            self.isScanRunning = true
-            self.lanScanner.start()
         }
+        self.connectedDevices.removeAll()
+        self.isScanRunning = true
+        self.lanScanner.start()
     }
 
-    func stopNetWorkScan() -> Void {
+    func stopNetWorkScan() {
         self.lanScanner.stop()
         self.isScanRunning = false
     }
@@ -81,30 +62,17 @@ class NetworkPresenter: NSObject, MMLANScannerDelegate, ObservableObject {
              let device = Device(tvName: name, macAddress: foundDevice.macAddress ?? "mac unavailable", ipAddress: foundDevice.ipAddress!)
             
             if(!self.connectedDevices.contains(device)) {
-                self.connectedDevices?.append(device)
+                self.connectedDevices.append(device)
             }
         }
     }
     
     func lanScanDidFailedToScan() {
-        
         self.isScanRunning = false
-        self.delegate?.mainPresenterIPSearchFailed()
     }
     
     func lanScanDidFinishScanning(with status: MMLanScannerStatus) {
-       
         self.isScanRunning = false
-        
-        //Checks the status of finished. Then call the appropriate method
-        if (status == MMLanScannerStatusFinished) {
-        
-            self.delegate?.mainPresenterIPSearchFinished()
-        }
-        else if (status == MMLanScannerStatusCancelled) {
-            
-            self.delegate?.mainPresenterIPSearchCancelled()
-        }
     }
     
     func lanScanProgressPinged(_ pingedHosts: Float, from overallHosts: Int) {

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,8 +16,12 @@
 		E230C87F24A542B800CB439C /* Sony.swift in Sources */ = {isa = PBXBuildFile; fileRef = E230C87E24A542B800CB439C /* Sony.swift */; };
 		E230C88124A54BA700CB439C /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = E230C88024A54BA700CB439C /* Device.swift */; };
 		E230C88424A55A0000CB439C /* SystemResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E230C88324A55A0000CB439C /* SystemResponse.swift */; };
-		E230C88624A779B700CB439C /* Unwrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = E230C88524A779B700CB439C /* Unwrap.swift */; };
 		E25CC57D249A8FB800CA5FFA /* ToggleRoundStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25CC57C249A8FB800CA5FFA /* ToggleRoundStyle.swift */; };
+		F1A0000224260001000B0001 /* PSKManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0000124260001000B0001 /* PSKManager.swift */; };
+		F1A0000224260002000B0002 /* BraviaAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0000124260002000B0002 /* BraviaAPIService.swift */; };
+		F1A0000224260003000B0003 /* IRCCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0000124260003000B0003 /* IRCCService.swift */; };
+		F1A0000224260004000B0004 /* RemoteControllerInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0000124260004000B0004 /* RemoteControllerInfoResponse.swift */; };
+		F1A0000224260005000B0005 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0000124260005000B0005 /* SettingsView.swift */; };
 		E2757C6524A4D13500322F21 /* NetworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2757C6424A4D13500322F21 /* NetworkView.swift */; };
 		E2757C6924A4DB4800322F21 /* NetworkPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2757C6824A4DB4800322F21 /* NetworkPresenter.swift */; };
 		E2C0385324996BF900144394 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C0385224996BF900144394 /* Extensions.swift */; };
@@ -44,8 +48,12 @@
 		E230C87E24A542B800CB439C /* Sony.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sony.swift; sourceTree = "<group>"; };
 		E230C88024A54BA700CB439C /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		E230C88324A55A0000CB439C /* SystemResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemResponse.swift; sourceTree = "<group>"; };
-		E230C88524A779B700CB439C /* Unwrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unwrap.swift; sourceTree = "<group>"; };
 		E25CC57C249A8FB800CA5FFA /* ToggleRoundStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleRoundStyle.swift; sourceTree = "<group>"; };
+		F1A0000124260001000B0001 /* PSKManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSKManager.swift; sourceTree = "<group>"; };
+		F1A0000124260002000B0002 /* BraviaAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BraviaAPIService.swift; sourceTree = "<group>"; };
+		F1A0000124260003000B0003 /* IRCCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRCCService.swift; sourceTree = "<group>"; };
+		F1A0000124260004000B0004 /* RemoteControllerInfoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteControllerInfoResponse.swift; sourceTree = "<group>"; };
+		F1A0000124260005000B0005 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E2757C6424A4D13500322F21 /* NetworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkView.swift; sourceTree = "<group>"; };
 		E2757C6724A4D8DE00322F21 /* Braviamote-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Braviamote-Bridging-Header.h"; sourceTree = "<group>"; };
 		E2757C6824A4DB4800322F21 /* NetworkPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkPresenter.swift; sourceTree = "<group>"; };
@@ -99,6 +107,7 @@
 				E2757C6824A4DB4800322F21 /* NetworkPresenter.swift */,
 				E230C88224A559C000CB439C /* Sony */,
 				E230C88024A54BA700CB439C /* Device.swift */,
+				F1A0000124260001000B0001 /* PSKManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -107,9 +116,12 @@
 			isa = PBXGroup;
 			children = (
 				E230C87E24A542B800CB439C /* Sony.swift */,
+				F1A0000124260002000B0002 /* BraviaAPIService.swift */,
+				F1A0000124260003000B0003 /* IRCCService.swift */,
 				E2281864249AF46800B1F229 /* PowerStatusResponse.swift */,
 				E2281866249BAEEF00B1F229 /* VolumeResponse.swift */,
 				E230C88324A55A0000CB439C /* SystemResponse.swift */,
+				F1A0000124260004000B0004 /* RemoteControllerInfoResponse.swift */,
 			);
 			path = Sony;
 			sourceTree = "<group>";
@@ -127,7 +139,6 @@
 			children = (
 				E2C3B796249955F6000C13B4 /* Awake.swift */,
 				E2C0385224996BF900144394 /* Extensions.swift */,
-				E230C88524A779B700CB439C /* Unwrap.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -138,6 +149,7 @@
 				E2C0385524996D7C00144394 /* Components */,
 				E2C3B78424993AF4000C13B4 /* TVControllerView.swift */,
 				E2757C6424A4D13500322F21 /* NetworkView.swift */,
+				F1A0000124260005000B0005 /* SettingsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -312,7 +324,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E230C88624A779B700CB439C /* Unwrap.swift in Sources */,
 				E2C3B797249955F6000C13B4 /* Awake.swift in Sources */,
 				E2C0385324996BF900144394 /* Extensions.swift in Sources */,
 				E2281865249AF46800B1F229 /* PowerStatusResponse.swift in Sources */,
@@ -331,6 +342,11 @@
 				E2757C6924A4DB4800322F21 /* NetworkPresenter.swift in Sources */,
 				E230C88424A55A0000CB439C /* SystemResponse.swift in Sources */,
 				E2307CC5249A6A58000AD8F1 /* IconButtonStyle.swift in Sources */,
+				F1A0000224260001000B0001 /* PSKManager.swift in Sources */,
+				F1A0000224260002000B0002 /* BraviaAPIService.swift in Sources */,
+				F1A0000224260003000B0003 /* IRCCService.swift in Sources */,
+				F1A0000224260004000B0004 /* RemoteControllerInfoResponse.swift in Sources */,
+				F1A0000224260005000B0005 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,14 +485,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Braviamote/Preview Content\"";
-				DEVELOPMENT_TEAM = H2S8CGP6ZK;
+				DEVELOPMENT_TEAM = Q3XXC235BC;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Braviamote/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.marvinwagner.Braviamote;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vivo.Braviamote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Braviamote/Braviamote-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -491,14 +507,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Braviamote/Preview Content\"";
-				DEVELOPMENT_TEAM = H2S8CGP6ZK;
+				DEVELOPMENT_TEAM = Q3XXC235BC;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Braviamote/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.marvinwagner.Braviamote;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vivo.Braviamote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Braviamote/Braviamote-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

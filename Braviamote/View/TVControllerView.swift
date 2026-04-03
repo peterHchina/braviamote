@@ -1,9 +1,6 @@
 //
-//  ContentView.swift
+//  TVControllerView.swift
 //  Braviamote
-//
-//  Created by Marvin Wagner on 16/06/20.
-//  Copyright © 2020 Marvin Wagner. All rights reserved.
 //
 
 import SwiftUI
@@ -12,19 +9,26 @@ class UserDefaultsManager: ObservableObject {
     @Published var name: String = UserDefaults.standard.string(forKey: "name") ?? "" {
         didSet { UserDefaults.standard.set(self.name, forKey: "name") }
     }
-    
+
     @Published var ipAddress: String = UserDefaults.standard.string(forKey: "ipAddress") ?? "" {
         didSet { UserDefaults.standard.set(self.ipAddress, forKey: "ipAddress") }
     }
-    
+
     @Published var macAddress: String = UserDefaults.standard.string(forKey: "macAddress") ?? "" {
         didSet { UserDefaults.standard.set(self.macAddress, forKey: "macAddress") }
     }
+
+    @Published var psk: String = UserDefaults.standard.string(forKey: "psk") ?? PSKManager.defaultPSK {
+        didSet {
+            UserDefaults.standard.set(self.psk, forKey: "psk")
+            PSKManager.psk = self.psk
+        }
+    }
 }
-//isConnected
+
 struct StatusLight: View {
     var color: Color
-    
+
     var body: some View {
         Circle()
             .fill(color)
@@ -34,27 +38,24 @@ struct StatusLight: View {
 }
 
 struct Visor: View {
-    @ObservedObject var tv : TVControllerManagement
+    @ObservedObject var tv: TVControllerManagement
     @ObservedObject var userDefaultsManager = UserDefaultsManager()
-    
+
     var body: some View {
         VStack(alignment: .leading) {
-            
             HStack {
-                if (userDefaultsManager.name != "") {
+                if userDefaultsManager.name != "" {
                     Text(userDefaultsManager.name).font(.subheadline)
                 } else {
                     Text("No TV selected")
                 }
-                if (tv.isConnected) {
+                if tv.isConnected {
                     StatusLight(color: Color.green)
                 } else {
                     StatusLight(color: Color.red)
                 }
-                
             }
             Text(self.tv.volumeDescription)
-           
         }
         .padding(20)
         .background(
@@ -62,50 +63,35 @@ struct Visor: View {
                 .fill(Color.gray).frame(width: 230)
                 .shadow(color: Color.darkEnd, radius: 10, x: 10, y: 10)
                 .shadow(color: Color.gray.opacity(0.3), radius: 10, x: -10, y: -10)
-            
         )
         .onAppear {
-            self.tv.checkPowerStatus()
-            self.tv.checkVolumeInfo()
+            self.tv.setup()
         }
     }
 }
 
 struct TVControllerView: View {
     @State var showingNetwork = false
-    
+    @State var showingSettings = false
+
     @ObservedObject var tv = TVControllerManagement()
+    @ObservedObject var userDefaultsManager = UserDefaultsManager()
 
     var body: some View {
         ZStack {
-            LinearGradient(Color.darkStart, Color.darkEnd)
+            LinearGradient(Color.darkStart, Color.darkEnd).edgesIgnoringSafeArea(.all)
 
             VStack(spacing: 20) {
                 HStack(spacing: 20) {
 
                     Visor(tv: tv).frame(width: 230)
-                    
-//                    Spacer(minLength: 20)
-                    
-                    
+
                     Toggle(isOn: $tv.isTurnedOn) {
                         Image(systemName: "power")
                             .foregroundColor(.white)
                     }
                     .toggleStyle(RoundToggleStyle(color: .green, size: 80, perform: {
-                        let wantToTurnOn = self.tv.isTurnedOn // pega o valor já atribuido
-                        if (wantToTurnOn) {
-                            self.tv.turnOn()
-                            Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
-                                self.tv.checkPowerStatus()
-                            }
-                        } else {
-                            self.tv.loading = true
-                            self.tv.sendCommand(name: "PowerOff")
-                            Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
-                                self.tv.checkPowerStatus()
-                            }
-                        }
+                        self.tv.togglePower()
                     }))
 
                 }
@@ -113,16 +99,15 @@ struct TVControllerView: View {
 
                 HStack(spacing: 20) {
                     Button(action: {
-                        self.tv.sendCommand(name: "Return")
+                        self.tv.sendIRCCCommand(name: "Return")
                     }) {
                         Image(systemName: "return")
                             .foregroundColor(.white)
                     }
                     .buttonStyle(RectButtonStyle(color: .blue, width: 100))
 
-                    
                     Button(action: {
-                        self.tv.sendCommand(name: "Home")
+                        self.tv.sendIRCCCommand(name: "Home")
                     }) {
                         Image(systemName: "house")
                             .foregroundColor(.white)
@@ -130,21 +115,18 @@ struct TVControllerView: View {
                     .buttonStyle(RectButtonStyle(color: .blue, width: 100))
 
                     Button(action: {
-                        self.tv.sendCommand(name: "Options")
+                        self.tv.sendIRCCCommand(name: "Options")
                     }) {
                         Image(systemName: "info.circle")
                             .foregroundColor(.white)
                     }
                     .buttonStyle(RectButtonStyle(color: .blue, width: 100))
-                    
-                    
                 }
                 .padding(.horizontal, 40)
 
                 HStack(spacing: 20) {
-                                        
                     Button(action: {
-                        self.tv.sendCommand(name: "Input")
+                        self.tv.sendIRCCCommand(name: "Input")
                     }) {
                         Image(systemName: "square.and.arrow.down")
                             .foregroundColor(.white)
@@ -152,15 +134,15 @@ struct TVControllerView: View {
                     .buttonStyle(RectButtonStyle(color: .blue, width: 100))
 
                     Button(action: {
-                        self.tv.sendCommand(name: "Netflix")
+                        self.tv.sendIRCCCommand(name: "Youtube")
                     }) {
-                        Image("netflix")
+                        Image("youtube")
                             .resizable()
                             .scaledToFill()
-                        .frame(width: 25, height: 25)
+                            .frame(width: 25, height: 25)
                     }
                     .buttonStyle(RectButtonStyle(color: .red, width: 100))
-                    
+
                     Button(action: {
                         self.showingNetwork.toggle()
                     }) {
@@ -179,10 +161,9 @@ struct TVControllerView: View {
                         .fill(LinearGradient(Color.darkEnd, Color.darkStart))
                         .frame(minWidth: 200, idealWidth: 200, maxWidth: 200, minHeight: 200, idealHeight: 200, maxHeight: 200, alignment: .center)
 
-
                     VStack(spacing: 25) {
                         Button(action: {
-                            self.tv.sendCommand(name: "Up")
+                            self.tv.sendIRCCCommand(name: "Up")
                         }) {
                             IconButton(imageSystemName: "chevron.up")
                         }
@@ -190,31 +171,30 @@ struct TVControllerView: View {
                         HStack(spacing: 25) {
                             Spacer()
                             Button(action: {
-                                self.tv.sendCommand(name: "Left")
+                                self.tv.sendIRCCCommand(name: "Left")
                             }) {
                                 IconButton(imageSystemName: "chevron.left")
                             }
 
                             Button(action: {
-                                self.tv.sendCommand(name: "Confirm")
+                                self.tv.sendIRCCCommand(name: "Confirm")
                             }) {
                                 Image(systemName: "checkmark")
                                     .foregroundColor(.white)
                                     .font(.system(size: 20))
                             }
                             .buttonStyle(RoundedColorButtonStyle(color: .blue, padding: 20))
-                            
+
                             Button(action: {
-                                self.tv.sendCommand(name: "Right")
+                                self.tv.sendIRCCCommand(name: "Right")
                             }) {
                                 IconButton(imageSystemName: "chevron.right")
                             }
                             Spacer()
                         }
 
-
                         Button(action: {
-                            self.tv.sendCommand(name: "Down")
+                            self.tv.sendIRCCCommand(name: "Down")
                         }) {
                             IconButton(imageSystemName: "chevron.down")
                         }
@@ -227,11 +207,9 @@ struct TVControllerView: View {
                             .fill(LinearGradient(gradient: Gradient(colors: [Color.darkEnd, Color.darkStart]), startPoint: .leading, endPoint: .trailing))
                             .frame(width: 70, height: 190)
 
-
                         VStack(spacing: 15) {
                             Button(action: {
-                                self.tv.sendCommand(name: "VolumeUp")
-                                self.tv.checkVolumeInfo()
+                                self.tv.volumeUp()
                             }) {
                                 Image(systemName: "speaker.3.fill")
                                     .foregroundColor(.white)
@@ -243,8 +221,7 @@ struct TVControllerView: View {
                                 .font(.system(size: 24))
 
                             Button(action: {
-                                self.tv.sendCommand(name: "VolumeDown")
-                                self.tv.checkVolumeInfo()
+                                self.tv.volumeDown()
                             }) {
                                 Image(systemName: "speaker.1.fill")
                                     .foregroundColor(.white)
@@ -256,7 +233,7 @@ struct TVControllerView: View {
                     VStack(spacing: 20) {
                         HStack(spacing: 20) {
                             Button(action: {
-                                self.tv.sendCommand(name: "Play")
+                                self.tv.sendIRCCCommand(name: "Play")
                             }) {
                                 Image(systemName: "play")
                                     .foregroundColor(.white)
@@ -264,17 +241,17 @@ struct TVControllerView: View {
                             .buttonStyle(RectButtonStyle(color: .blue))
 
                             Button(action: {
-                                self.tv.sendCommand(name: "Pause")
+                                self.tv.sendIRCCCommand(name: "Pause")
                             }) {
                                 Image(systemName: "pause")
                                     .foregroundColor(.white)
                             }
                             .buttonStyle(RectButtonStyle(color: .blue))
                         }
-                        
+
                         HStack(spacing: 20) {
                             Button(action: {
-                                self.tv.sendCommand(name: "Rewind")
+                                self.tv.sendIRCCCommand(name: "Rewind")
                             }) {
                                 Image(systemName: "backward")
                                     .foregroundColor(.white)
@@ -282,21 +259,20 @@ struct TVControllerView: View {
                             .buttonStyle(RectButtonStyle(color: .blue))
 
                             Button(action: {
-                                self.tv.sendCommand(name: "Forward")
+                                self.tv.sendIRCCCommand(name: "Forward")
                             }) {
                                 Image(systemName: "forward")
                                     .foregroundColor(.white)
                             }
                             .buttonStyle(RectButtonStyle(color: .blue))
                         }
-                        
+
                         Toggle(isOn: $tv.isMuted) {
                             Image(systemName: "speaker.slash.fill")
                                 .foregroundColor(.white)
                         }
                         .toggleStyle(RoundToggleStyle(perform: {
-                            self.tv.sendCommand(name: "Mute")
-                            self.tv.checkVolumeInfo()
+                            self.tv.toggleMute()
                         }))
                     }
 
@@ -307,7 +283,7 @@ struct TVControllerView: View {
 
                         VStack(alignment: .center, spacing: 15) {
                             Button(action: {
-                                self.tv.sendCommand(name: "ChannelUp")
+                                self.tv.sendIRCCCommand(name: "ChannelUp")
                             }) {
                                 Image(systemName: "plus")
                                     .foregroundColor(.white)
@@ -319,17 +295,28 @@ struct TVControllerView: View {
                                 .font(.system(size: 24))
 
                             Button(action: {
-                                self.tv.sendCommand(name: "ChannelDown")
+                                self.tv.sendIRCCCommand(name: "ChannelDown")
                             }) {
                                 Image(systemName: "minus")
                                     .foregroundColor(.white)
                             }
                             .buttonStyle(RoundedColorButtonStyle(color: .blue, showLightShadow: false, padding: 25))
-                                
                         }
                     }
                 }
                 .padding(.horizontal, 40)
+
+                // Settings button
+                Button(action: {
+                    self.showingSettings.toggle()
+                }) {
+                    Image(systemName: "gear")
+                        .foregroundColor(.gray)
+                        .font(.system(size: 16))
+                }
+                .sheet(isPresented: $showingSettings) {
+                    SettingsView(isPresented: self.$showingSettings, userDefaults: self.userDefaultsManager)
+                }
             }
             .padding(EdgeInsets(top: 40, leading: 0, bottom: 50, trailing: 0))
         }
@@ -337,10 +324,8 @@ struct TVControllerView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct TVControllerView_Previews: PreviewProvider {
     static var previews: some View {
         TVControllerView().previewDevice("iPhone 7")
-//        TVControllerView().previewDevice("iPhone Xr")
-//        TVControllerView().previewDevice("iPad Pro (10.5-inch)")
     }
 }

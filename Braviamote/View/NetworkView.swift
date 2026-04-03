@@ -8,20 +8,6 @@
 
 import SwiftUI
 
-struct NavigationConfigurator: UIViewControllerRepresentable {
-    var configure: (UINavigationController) -> Void = { _ in }
-
-    func makeUIViewController(context: UIViewControllerRepresentableContext<NavigationConfigurator>) -> UIViewController {
-        UIViewController()
-    }
-    func updateUIViewController(_ uiViewController: UIViewController, context: UIViewControllerRepresentableContext<NavigationConfigurator>) {
-        if let nc = uiViewController.navigationController {
-            self.configure(nc)
-        }
-    }
-
-}
-
 struct NetworkView: View {
     @ObservedObject var network = NetworkPresenter()
     @ObservedObject var tv: TVControllerManagement
@@ -65,8 +51,7 @@ struct NetworkView: View {
         defaults.set(tvName, forKey: "name")
     }
     private func dismissAndReload() {
-        self.tv.checkPowerStatus()
-        self.tv.checkVolumeInfo()
+        self.tv.setup()
         self.isPresented = false
     }
     
@@ -187,8 +172,8 @@ struct ProgressBar: View {
     @Binding var value: Float
     
     var body: some View {
-        if (visible) {
-            return AnyView(GeometryReader { geometry in
+        if visible {
+            GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     Rectangle().frame(width: geometry.size.width , height: geometry.size.height)
                         .opacity(0.3)
@@ -198,9 +183,7 @@ struct ProgressBar: View {
                         .foregroundColor(Color(UIColor.systemBlue))
                         .animation(.linear)
                 }.cornerRadius(45.0)
-            })
-        } else {
-            return AnyView(EmptyView())
+            }
         }
     }
 }
